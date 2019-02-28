@@ -6,9 +6,10 @@ const axios = require("axios");
 app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
-	const { challenge, event } = req.body;
+	const { event } = req.body;
 	const matches = _.uniq(event.text.match(/(WEB|IM|WSUP)-\d+/gi));
 	console.log("---------------------------------------------------------");
+	console.log(event);
 	if (event.text.includes("MWTEST")) {
 		const newMessage = {
 			channel: event.channel,
@@ -27,7 +28,7 @@ app.post("/", (req, res) => {
 			});
 	}
 	console.log("---------------------------------------------------------");
-	res.send({ challenge });
+	res.send({});
 });
 
 const PORT = process.env.PORT || 3000;
