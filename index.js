@@ -19,7 +19,6 @@ const headers = {
 
 //Main Route
 app.post("/", (req, res) => {
-	console.log(Authorization);
 	const { text, channel, ts, subtype } = req.body.event;
 
 	//Need this to prevent infinite loops
@@ -41,12 +40,13 @@ app.post("/", (req, res) => {
 			);
 		} else {
 			_.map(matches, async issue => {
+				const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue}>`;
 				await axios.post(
 					"https://slack.com/api/chat.postMessage",
 					{
 						channel,
 						thread_ts: ts,
-						text: `${issue} link goes here`
+						text
 					},
 					{ headers }
 				);
