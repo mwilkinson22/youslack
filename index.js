@@ -22,9 +22,9 @@ app.post("/", (req, res) => {
 			newMessage.text = "Yeah nah mate";
 			axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 		} else {
-			_.map(matches, issue => {
+			_.map(matches, async issue => {
 				newMessage.text = `${issue} link goes here`;
-				axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+				await axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 			});
 		}
 	}
