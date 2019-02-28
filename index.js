@@ -9,14 +9,15 @@ app.post("/", (req, res) => {
 	const { challenge, event } = req.body;
 	const matches = _.uniq(event.text.match(/(WEB|IM|WSUP)-\d+/gi));
 	console.log("---------------------------------------------------------");
-	console.log(req.body);
+	console.log("NEW MESSAGE");
+	console.log(event);
 	console.log("---------------------");
-	console.log(matches);
 	if (event.text.includes("MWTEST")) {
 		axios.post(
 			"https://hooks.slack.com/services/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",
 			{
 				channel: event.channel,
+				thread_ts: event.ts,
 				text: "Hello world, " + matches.join(", ")
 			}
 		);
