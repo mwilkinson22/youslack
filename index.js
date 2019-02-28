@@ -14,16 +14,21 @@ app.post("/", (req, res) => {
 	const { text, channel, ts, subtype } = req.body.event;
 	if (subtype !== "bot_message") {
 		const matches = _.uniq(text.match(/(WEB|IM|WSUP)-\d+/gi));
-		const newMessage = {
-			channel: channel,
-			thread_ts: ts
-		};
 		if (matches.length > 10) {
-			newMessage.text = "Yeah nah mate";
+			const newMessage = {
+				channel: channel,
+				thread_ts: ts,
+				text: "Nah mate"
+			};
 			axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 		} else {
 			_.map(matches, async issue => {
-				newMessage.text = `${issue} link goes here`;
+				console.log(issue);
+				const newMessage = {
+					channel: channel,
+					thread_ts: ts,
+					text: `${issue} link goes here`;
+				};
 				await axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 			});
 		}
