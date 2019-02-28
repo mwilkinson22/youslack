@@ -1,35 +1,53 @@
+//Modules
+const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
-const _ = require("lodash");
 const axios = require("axios");
+
+//Boot up express
+const app = express();
 app.use(bodyParser.json());
+
+//Get auth key
+const { Authorization } = require("./config/keys");
+
+//Set post headers
 const headers = {
-	"Content-Type": "application/json",
-	Authorization:
-		"Bearer xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
+	Authorization
 };
 
+//Main Route
 app.post("/", (req, res) => {
 	const { text, channel, ts, subtype } = req.body.event;
+
+	//Need this to prevent infinite loops
 	if (subtype !== "bot_message") {
 		const matches = _.uniq(text.match(/(WEB|IM|WSUP)-\d+/gi));
+
+		//Maximum 10 responses to prevent spam
 		if (matches.length > 10) {
-			const newMessage = {
-				channel: channel,
-				thread_ts: ts,
-				text: "Nah mate"
-			};
-			axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+			axios.post(
+				"https://slack.com/api/chat.postMessage",
+				{
+					channel,
+					thread_ts: ts,
+					text: `${
+						matches.length
+					} issues?! Do you want Skynet? Because this is how you get Skynet`
+				},
+				{ headers }
+			);
 		} else {
 			_.map(matches, async issue => {
-				console.log(issue);
-				const newMessage = {
-					channel: channel,
-					thread_ts: ts,
-					text: `${issue} link goes here`
-				};
-				await axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+				await axios.post(
+					"https://slack.com/api/chat.postMessage",
+					{
+						channel,
+						thread_ts: ts,
+						text: `${issue} link goes here`
+					},
+					{ headers }
+				);
 			});
 		}
 	}
