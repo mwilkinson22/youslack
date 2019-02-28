@@ -11,8 +11,6 @@ app.use(bodyParser.json());
 //Get auth key
 const { Authorization } = require("./config/keys");
 
-console.log(Authorization);
-
 //Set post headers
 const headers = {
 	"Content-type": "application/json",
@@ -21,6 +19,7 @@ const headers = {
 
 //Main Route
 app.post("/", (req, res) => {
+	console.log(Authorization);
 	const { text, channel, ts, subtype } = req.body.event;
 
 	//Need this to prevent infinite loops
