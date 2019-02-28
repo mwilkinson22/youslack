@@ -21,11 +21,7 @@ app.post("/", (req, res) => {
 			Authorization:
 				"Bearer xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
 		};
-		axios
-			.post("https://slack.com/api/chat.postMessage", newMessage, { headers })
-			.then(response => {
-				console.log(response);
-			});
+		axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 	}
 	console.log("---------------------------------------------------------");
 	res.send({});
