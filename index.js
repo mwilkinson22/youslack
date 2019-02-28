@@ -4,26 +4,30 @@ const app = express();
 const _ = require("lodash");
 const axios = require("axios");
 app.use(bodyParser.json());
+const headers = {
+	"Content-Type": "application/json",
+	Authorization:
+		"Bearer xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
+};
 
 app.post("/", (req, res) => {
-	const { event } = req.body;
-	const matches = _.uniq(event.text.match(/(WEB|IM|WSUP)-\d+/gi));
-	console.log("---------------------------------------------------------");
-	console.log(event);
-	if (event.text.includes("MWTEST")) {
+	const { text, channel, ts, subtype } = req.body.event;
+	if (subtype !== "bot_message") {
+		const matches = _.uniq(text.match(/(WEB|IM|WSUP)-\d+/gi));
 		const newMessage = {
-			channel: event.channel,
-			thread_ts: event.ts,
-			text: "Hello world, " + matches.join(", ")
+			channel: channel,
+			thread_ts: ts
 		};
-		const headers = {
-			"Content-Type": "application/json",
-			Authorization:
-				"Bearer xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
-		};
-		axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+		if (matches.length > 10) {
+			newMessage.text = "Yeah nah mate";
+			axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+		} else {
+			_.map(matches, issue => {
+				newMessage.text = `${issue} link goes here`;
+				axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+			});
+		}
 	}
-	console.log("---------------------------------------------------------");
 	res.send({});
 });
 
