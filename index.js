@@ -27,7 +27,7 @@ app.post("/", (req, res) => {
 				const newMessage = {
 					channel: channel,
 					thread_ts: ts,
-					text: `${issue} link goes here`;
+					text: `${issue} link goes here`
 				};
 				await axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 			});
