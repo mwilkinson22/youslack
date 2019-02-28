@@ -6,7 +6,7 @@ app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
 	const { challenge, event } = req.body;
-	const matches = event.text.match(/(WEB|IM|WSUP)-\d+/gi);
+	const matches = _.uniq(event.text.match(/(WEB|IM|WSUP)-\d+/gi));
 	console.log("---------------------------------------------------------");
 	console.log(req.body);
 	console.log(matches);
