@@ -13,14 +13,17 @@ app.post("/", (req, res) => {
 	console.log(event);
 	console.log("---------------------");
 	if (event.text.includes("MWTEST")) {
-		axios.post(
-			"https://hooks.slack.com/services/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",
-			{
-				channel: event.channel,
-				thread_ts: event.ts,
-				text: "Hello world, " + matches.join(", ")
-			}
-		);
+		const newMessage = {
+			channel: event.channel,
+			thread_ts: event.ts,
+			text: "Hello world, " + matches.join(", ")
+		};
+		const headers = {
+			"Content-Type": "application/json",
+			Authorization:
+				"xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
+		};
+		axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
 	}
 	console.log("---------------------------------------------------------");
 	res.send({ challenge });
