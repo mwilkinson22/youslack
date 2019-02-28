@@ -1,11 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const _ = require("lodash");
 app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
-	const { challenge } = req.body;
+	const { challenge, event } = req.body;
+	const matches = event.text.match(/(WEB|IM|WSUP)-\d+/gi);
+	console.log("---------------------------------------------------------");
 	console.log(req.body);
+	console.log(matches);
+	console.log("---------------------------------------------------------");
 	res.send({ challenge });
 });
 
