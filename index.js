@@ -18,7 +18,7 @@ app.post("/", (req, res) => {
 		const headers = {
 			"Content-Type": "application/json",
 			Authorization:
-				"xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
+				"Bearer xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
 		};
 		axios
 			.post("https://slack.com/api/chat.postMessage", newMessage, { headers })
