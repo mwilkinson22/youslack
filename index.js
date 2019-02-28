@@ -4,8 +4,8 @@ const app = express();
 app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
-	console.log(req.body);
-	res.send({});
+	const { challenge } = req.body;
+	res.send({ challenge });
 });
 
 const PORT = process.env.PORT || 3000;
