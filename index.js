@@ -9,9 +9,6 @@ app.post("/", (req, res) => {
 	const { challenge, event } = req.body;
 	const matches = _.uniq(event.text.match(/(WEB|IM|WSUP)-\d+/gi));
 	console.log("---------------------------------------------------------");
-	console.log("NEW MESSAGE");
-	console.log(event);
-	console.log("---------------------");
 	if (event.text.includes("MWTEST")) {
 		const newMessage = {
 			channel: event.channel,
@@ -23,7 +20,11 @@ app.post("/", (req, res) => {
 			Authorization:
 				"xoxp-562776330048-564957021846-563851623157-81801d4b63f78be5092d7e29ebbaaff1"
 		};
-		axios.post("https://slack.com/api/chat.postMessage", newMessage, { headers });
+		axios
+			.post("https://slack.com/api/chat.postMessage", newMessage, { headers })
+			.then(response => {
+				console.log(response);
+			});
 	}
 	console.log("---------------------------------------------------------");
 	res.send({ challenge });
