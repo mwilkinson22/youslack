@@ -10,6 +10,10 @@ app.post("/", (req, res) => {
 	console.log("---------------------------------------------------------");
 	console.log(req.body);
 	console.log(matches);
+	axios.post("https://hooks.slack.com/services/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", {
+		channel: event.channel,
+		text: "Hello world, " + matches.join(", ")
+	});
 	console.log("---------------------------------------------------------");
 	res.send({ challenge });
 });
