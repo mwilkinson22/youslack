@@ -5,6 +5,7 @@ app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
 	const { challenge } = req.body;
+	console.log(req.body);
 	res.send({ challenge });
 });
 
