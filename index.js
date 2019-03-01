@@ -47,9 +47,12 @@ app.post("/", (req, res) => {
 				};
 				let errorFound = false;
 				const response = await axios
-					.get(`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}`, {
-						headers: youtrackHeaders
-					})
+					.get(
+						`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
+						{
+							headers: youtrackHeaders
+						}
+					)
 					.catch(() => {
 						errorFound = true;
 					});
@@ -57,10 +60,8 @@ app.post("/", (req, res) => {
 					console.log("--------------------------");
 					console.log(response);
 
-					const title = "Fix All Impact Bugs";
-					const description =
-						"Now this is a story all about how my life got flipped turned upside down and I'd like to take a minute, just sit right there, I'll tell you how I became the prince of a town called Bel-Air. In West Philadelphia born and raised, on the playground is where I spent most of my days. Chilling out, maxing, relaxing all cool and all shooting some b-ball outside of the school, when a couple of guys who were up to no good started making trouble in my neighborhood. I got in one little fight and my mom got scared And said \"You're moving with your auntie and uncle in Bel-Air\"";
-					const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${title}>\n${description}`;
+					const { summary, description } = response.data;
+					const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
 					await axios.post(
 						"https://slack.com/api/chat.postMessage",
 						{
