@@ -25,8 +25,8 @@ app.post("/", (req, res) => {
 	if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
 		const matches = _.uniq(text.match(/(WEB|IM|WSUP)-\d+/gi));
 
-		//Maximum 10 responses to prevent spam
-		if (matches.length > 10) {
+		//Maximum 20 responses to prevent spam
+		if (matches.length > 20) {
 			axios.post(
 				"https://slack.com/api/chat.postMessage",
 				{
@@ -61,7 +61,7 @@ app.post("/", (req, res) => {
 					console.log(response);
 
 					const { summary, description } = response.data;
-					const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
+					const text = `:daveface: <https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
 					await axios.post(
 						"https://slack.com/api/chat.postMessage",
 						{
