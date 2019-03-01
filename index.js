@@ -75,9 +75,6 @@ app.post("/", (req, res) => {
 							errorFound = true;
 						});
 					if (!errorFound) {
-						console.log("--------------------------");
-						console.log(response);
-
 						const { summary, description } = response.data;
 						const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${escapeChars(
 							summary
