@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 	res.send("Hello, Arden user. How's it going?");
 });
 app.post("/", (req, res) => {
-	const { text, channel, ts, subtype, challenge } = req.body.event;
+	const { text, channel, ts, subtype } = req.body.event;
 
 	//Need this to prevent infinite loops
 	if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
@@ -80,7 +80,7 @@ app.post("/", (req, res) => {
 			});
 		}
 	}
-	res.send({ challenge });
+	res.send({ challenge: req.body.challenge });
 });
 
 const PORT = process.env.PORT || 3000;
