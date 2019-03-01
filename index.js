@@ -22,7 +22,7 @@ app.post("/", (req, res) => {
 	const { text, channel, ts, subtype } = req.body.event;
 
 	//Need this to prevent infinite loops
-	if (subtype !== "bot_message") {
+	if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
 		const matches = _.uniq(text.match(/(WEB|IM|WSUP)-\d+/gi));
 
 		//Maximum 10 responses to prevent spam
@@ -67,7 +67,7 @@ app.post("/", (req, res) => {
 						{
 							channel,
 							thread_ts: ts,
-							text
+							text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
 						},
 						{ headers: slackHeaders }
 					);
