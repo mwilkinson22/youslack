@@ -43,8 +43,8 @@ app.post("/", (req, res) => {
 				)
 			);
 
-			//Maximum 20 responses to prevent spam
-			if (matches.length > 20) {
+			//Maximum 10 responses to prevent spam
+			if (matches.length > 10) {
 				axios.post(
 					"https://slack.com/api/chat.postMessage",
 					{
