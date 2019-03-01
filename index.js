@@ -22,65 +22,69 @@ app.get("/", (req, res) => {
 	res.send("Hello, Arden user. How's it going?");
 });
 app.post("/", (req, res) => {
-	const { text, channel, ts, subtype } = req.body.event;
+	const { event, challenge } = req.body;
 
-	//Need this to prevent infinite loops
-	if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
-		const matches = _.uniq(
-			text.match(/(WEB|IM|WSUP|WTST|EN|LENS|ICN|WIKI|nService|STAN|TOP)-\d+/gi)
-		);
+	if (event) {
+		const { text, channel, ts, subtype } = event;
 
-		//Maximum 20 responses to prevent spam
-		if (matches.length > 20) {
-			axios.post(
-				"https://slack.com/api/chat.postMessage",
-				{
-					channel,
-					thread_ts: ts,
-					text: `${
-						matches.length
-					} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`
-				},
-				{ headers: slackHeaders }
+		//Need this to prevent infinite loops
+		if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
+			const matches = _.uniq(
+				text.match(/(WEB|IM|WSUP|WTST|EN|LENS|ICN|WIKI|nService|STAN|TOP)-\d+/gi)
 			);
-		} else {
-			_.map(matches, async issue => {
-				//Get Headers for YouTrack API
-				const youtrackHeaders = {
-					"Content-type": "application/json",
-					Authorization: youtrackAuth
-				};
-				let errorFound = false;
-				const response = await axios
-					.get(
-						`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
-						{
-							headers: youtrackHeaders
-						}
-					)
-					.catch(() => {
-						errorFound = true;
-					});
-				if (!errorFound) {
-					console.log("--------------------------");
-					console.log(response);
 
-					const { summary, description } = response.data;
-					const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
-					await axios.post(
-						"https://slack.com/api/chat.postMessage",
-						{
-							channel,
-							thread_ts: ts,
-							text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
-						},
-						{ headers: slackHeaders }
-					);
-				}
-			});
+			//Maximum 20 responses to prevent spam
+			if (matches.length > 20) {
+				axios.post(
+					"https://slack.com/api/chat.postMessage",
+					{
+						channel,
+						thread_ts: ts,
+						text: `${
+							matches.length
+						} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`
+					},
+					{ headers: slackHeaders }
+				);
+			} else {
+				_.map(matches, async issue => {
+					//Get Headers for YouTrack API
+					const youtrackHeaders = {
+						"Content-type": "application/json",
+						Authorization: youtrackAuth
+					};
+					let errorFound = false;
+					const response = await axios
+						.get(
+							`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
+							{
+								headers: youtrackHeaders
+							}
+						)
+						.catch(() => {
+							errorFound = true;
+						});
+					if (!errorFound) {
+						console.log("--------------------------");
+						console.log(response);
+
+						const { summary, description } = response.data;
+						const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
+						await axios.post(
+							"https://slack.com/api/chat.postMessage",
+							{
+								channel,
+								thread_ts: ts,
+								text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
+							},
+							{ headers: slackHeaders }
+						);
+					}
+				});
+			}
 		}
 	}
-	res.send({ challenge: req.body.challenge });
+	res.send({ challenge });
 });
 
 const PORT = process.env.PORT || 3000;
