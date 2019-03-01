@@ -46,7 +46,7 @@ app.post("/", (req, res) => {
 					Authorization: youtrackAuth
 				};
 				const response = await axios.get(
-					`https://youtrack.ardensoftware.com/youtrack/api/${issue}`,
+					`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}`,
 					{ headers }
 				);
 
