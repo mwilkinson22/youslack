@@ -45,27 +45,32 @@ app.post("/", (req, res) => {
 					"Content-type": "application/json",
 					Authorization: youtrackAuth
 				};
-				const response = await axios.get(
-					`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}`,
-					{ headers }
-				);
+				let errorFound = false;
+				const response = await axios
+					.get(`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}`, {
+						headers
+					})
+					.catch(() => {
+						errorFound = true;
+					});
+				if (!errorFound) {
+					console.log("--------------------------");
+					console.log(response);
 
-				console.log("--------------------------");
-				console.log(response);
-
-				const title = "Fix All Impact Bugs";
-				const description =
-					"Now this is a story all about how my life got flipped turned upside down and I'd like to take a minute, just sit right there, I'll tell you how I became the prince of a town called Bel-Air. In West Philadelphia born and raised, on the playground is where I spent most of my days. Chilling out, maxing, relaxing all cool and all shooting some b-ball outside of the school, when a couple of guys who were up to no good started making trouble in my neighborhood. I got in one little fight and my mom got scared And said \"You're moving with your auntie and uncle in Bel-Air\"";
-				const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${title}>\n${description}`;
-				await axios.post(
-					"https://slack.com/api/chat.postMessage",
-					{
-						channel,
-						thread_ts: ts,
-						text
-					},
-					{ headers }
-				);
+					const title = "Fix All Impact Bugs";
+					const description =
+						"Now this is a story all about how my life got flipped turned upside down and I'd like to take a minute, just sit right there, I'll tell you how I became the prince of a town called Bel-Air. In West Philadelphia born and raised, on the playground is where I spent most of my days. Chilling out, maxing, relaxing all cool and all shooting some b-ball outside of the school, when a couple of guys who were up to no good started making trouble in my neighborhood. I got in one little fight and my mom got scared And said \"You're moving with your auntie and uncle in Bel-Air\"";
+					const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${title}>\n${description}`;
+					await axios.post(
+						"https://slack.com/api/chat.postMessage",
+						{
+							channel,
+							thread_ts: ts,
+							text
+						},
+						{ headers }
+					);
+				}
 			});
 		}
 	}
