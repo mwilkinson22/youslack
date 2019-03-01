@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 const { slackAuth, youtrackAuth } = require("./config/keys");
 
 //Set post headers
-const headers = {
+const slackHeaders = {
 	"Content-type": "application/json",
 	Authorization: slackAuth
 };
@@ -36,19 +36,19 @@ app.post("/", (req, res) => {
 						matches.length
 					} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`
 				},
-				{ headers }
+				{ headers: slackHeaders }
 			);
 		} else {
 			_.map(matches, async issue => {
 				//Get Headers for YouTrack API
-				const headers = {
+				const youtrackHeaders = {
 					"Content-type": "application/json",
 					Authorization: youtrackAuth
 				};
 				let errorFound = false;
 				const response = await axios
 					.get(`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}`, {
-						headers
+						headers: youtrackHeaders
 					})
 					.catch(() => {
 						errorFound = true;
@@ -68,7 +68,7 @@ app.post("/", (req, res) => {
 							thread_ts: ts,
 							text
 						},
-						{ headers }
+						{ headers: slackHeaders }
 					);
 				}
 			});
