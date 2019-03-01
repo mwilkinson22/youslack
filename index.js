@@ -38,7 +38,9 @@ app.post("/", (req, res) => {
 		//Need this to prevent infinite loops
 		if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
 			const matches = _.uniq(
-				text.match(/(WEB|IM|WSUP|WTST|EN|LENS|ICN|WIKI|nService|STAN|TOP|ILL)-\d+/gi)
+				text.match(
+					/(WEB|IM|WSUP|WTST|EN|LENS|ICN|WIKI|nService|STAN|TOP|ILL|MTP|MISC)-\d+/gi
+				)
 			);
 
 			//Maximum 20 responses to prevent spam
