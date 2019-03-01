@@ -17,7 +17,10 @@ const slackHeaders = {
 	Authorization: slackAuth
 };
 
-//Main Route
+//Routes
+app.get("/", (req, res) => {
+	res.send("Hello, Arden user. How's it going?");
+});
 app.post("/", (req, res) => {
 	const { text, channel, ts, subtype } = req.body.event;
 
