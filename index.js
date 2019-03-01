@@ -35,8 +35,8 @@ app.post("/", (req, res) => {
 	if (event) {
 		const { text, channel, ts, subtype } = event;
 
-		//Need this to prevent infinite loops
-		if (subtype !== "bot_message" && text.includes("YOUSLACKTEST")) {
+		//IMPORTANT - Need this if to prevent infinite loops
+		if (subtype !== "bot_message") {
 			const matches = _.uniq(
 				text.match(
 					/(WEB|IM|WSUP|WTST|EN|LENS|ICN|WIKI|nService|STAN|TOP|ILL|MTP|MISC)-\d+/gi
