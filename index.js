@@ -17,6 +17,14 @@ const slackHeaders = {
 	Authorization: slackAuth
 };
 
+//Escape test
+function escapeChars(text) {
+	return text
+		.replace(/\&/g, "&amp;")
+		.replace(/\</g, "&lt;")
+		.replace(/\>/g, "&gt;");
+}
+
 //Routes
 app.get("/", (req, res) => {
 	res.send("Hello, Arden user. How's it going?");
@@ -69,9 +77,9 @@ app.post("/", (req, res) => {
 						console.log(response);
 
 						const { summary, description } = response.data;
-						const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${encodeURI(
+						const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${escapeChars(
 							summary
-						)}>\n${description}`;
+						)}>\n${escapeChars(description)}`;
 						await axios.post(
 							"https://slack.com/api/chat.postMessage",
 							{
