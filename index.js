@@ -61,7 +61,7 @@ app.post("/", (req, res) => {
 					console.log(response);
 
 					const { summary, description } = response.data;
-					const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
+					const text = `:daveface: <https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${summary}>\n${description}`;
 					await axios.post(
 						"https://slack.com/api/chat.postMessage",
 						{
