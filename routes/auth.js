@@ -2,6 +2,7 @@
 const _ = require("lodash");
 const qs = require("query-string");
 const axios = require("axios");
+const mongoose = require("mongoose");
 
 //Variables
 const { appClient, appSecret, team_id } = require("../config/keys");
@@ -35,6 +36,10 @@ module.exports = app => {
 				"Content-Type": "application/x-www-form-urlencoded"
 			}
 		});
+
+		const { ok, access_token, user_id } = token.data;
+		if (ok) {
+		}
 		console.log(token.data);
 		res.send({});
 	});
