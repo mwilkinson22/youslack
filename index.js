@@ -38,7 +38,7 @@ app.post("/", (req, res) => {
 
 	if (event) {
 		const { text, channel, ts, subtype } = event;
-
+		console.log(event);
 		//IMPORTANT - Need this if to prevent infinite loops
 		if (subtype !== "bot_message") {
 			const matches = _.uniq(
@@ -63,11 +63,6 @@ app.post("/", (req, res) => {
 			} else {
 				_.map(matches, async issue => {
 					let errorFound = false;
-					console.log("--------------------------");
-					console.log(issue);
-					console.log("Channel", channel);
-					console.log("ts", ts);
-					console.log("--------------------------");
 					const response = await axios
 						.get(
 							`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
