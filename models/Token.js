@@ -7,7 +7,7 @@ const schema = new Schema({
 		required: true
 	},
 	access_token: {
-		type: STring,
+		type: String,
 		required: true
 	}
 });
