@@ -4,7 +4,7 @@ const qs = require("query-string");
 const axios = require("axios");
 
 //Variables
-const { appClient, appSecret, team_id } = require("./config/keys");
+const { appClient, appSecret, team_id } = require("../config/keys");
 const redirect_uri = "https://as-youslack.herokuapp.com/auth_redirect";
 
 module.exports = app => {

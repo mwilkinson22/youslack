@@ -19,8 +19,8 @@ mongoose.connect(
 );
 
 //Add Routes
-require("./auth")(app);
-require("./messages")(app);
+require("./routes/auth")(app);
+require("./routes/messages")(app);
 
 //Prevent annoying GET error
 app.get("/", (req, res) => {

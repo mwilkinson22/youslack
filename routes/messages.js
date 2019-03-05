@@ -1,7 +1,7 @@
 //Modules
 const _ = require("lodash");
 const axios = require("axios");
-const { slackAuth, youtrackAuth } = require("./config/keys");
+const { slackAuth, youtrackAuth } = require("../config/keys");
 
 //Set axios headers
 const slackHeaders = {
