@@ -25,8 +25,6 @@ module.exports = app => {
 	app.post("/", (req, res) => {
 		const { event, challenge } = req.body;
 
-		console.log(req.body);
-
 		if (event) {
 			const { text, channel, ts, subtype } = event;
 
@@ -54,6 +52,9 @@ module.exports = app => {
 				} else {
 					_.map(matches, async issue => {
 						let errorFound = false;
+						console.log("---------------------------------------");
+						console.log("Processing issue: " + issue);
+						console.log(" ");
 						const response = await axios
 							.get(
 								`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
@@ -61,7 +62,9 @@ module.exports = app => {
 									headers: youtrackHeaders
 								}
 							)
-							.catch(() => {
+							.catch(e => {
+								console.log("Error Found in YouTrack request: ", e);
+								console.log(" ");
 								errorFound = true;
 							});
 						if (!errorFound) {
@@ -69,16 +72,23 @@ module.exports = app => {
 							const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${escapeChars(
 								summary
 							)}>\n${escapeChars(description)}`;
-							await axios.post(
-								"https://slack.com/api/chat.postMessage",
-								{
-									channel,
-									thread_ts: ts,
-									text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
-								},
-								{ headers: slackHeaders }
-							);
+							await axios
+								.post(
+									"https://slack.com/api/chat.postMessage",
+									{
+										channel,
+										thread_ts: ts,
+										text:
+											text.length < 3000 ? text : `${text.substr(0, 2997)}...`
+									},
+									{ headers: slackHeaders }
+								)
+								.catch(e => {
+									console.log("Error posting message: ", e);
+									console.log(" ");
+								});
 						}
+						console.log("---------------------------------------");
 					});
 				}
 			}
