@@ -24,7 +24,6 @@ module.exports = app => {
 
 	//Get Access Token
 	app.get("/auth_redirect", async (req, res) => {
-		console.log("ATTEMPTING AUTH");
 		const { code } = req.query;
 		const params = {
 			client_id: appClient,
@@ -52,7 +51,7 @@ module.exports = app => {
 				await token.save();
 			}
 
-			res.send("Authentication complete");
+			res.send("Authentication complete. Back to work.");
 		} else {
 			res.send("Authentication error");
 		}
