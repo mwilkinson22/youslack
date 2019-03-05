@@ -17,6 +17,7 @@ mongoose.connect(
 		useCreateIndex: true
 	}
 );
+require("./models/Token");
 
 //Add Routes
 require("./routes/auth")(app);
