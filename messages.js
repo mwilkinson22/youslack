@@ -72,7 +72,7 @@ module.exports = app => {
 							const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${escapeChars(
 								summary
 							)}>\n${escapeChars(description)}`;
-							await axios
+							const message = await axios
 								.post(
 									"https://slack.com/api/chat.postMessage",
 									{
@@ -87,6 +87,7 @@ module.exports = app => {
 									console.log("Error posting message: ", e);
 									console.log(" ");
 								});
+							console.log(message);
 						}
 						console.log("---------------------------------------");
 					});
