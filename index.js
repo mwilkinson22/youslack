@@ -8,16 +8,20 @@ const axios = require("axios");
 const app = express();
 app.use(bodyParser.json());
 
-//Get auth key
+//Get auth keys
 const { slackAuth, youtrackAuth } = require("./config/keys");
 
-//Set post headers
+//Set axios headers
 const slackHeaders = {
 	"Content-type": "application/json",
 	Authorization: slackAuth
 };
+const youtrackHeaders = {
+	"Content-type": "application/json",
+	Authorization: youtrackAuth
+};
 
-//Escape test
+//Escape text
 function escapeChars(text) {
 	return text
 		.replace(/\&/g, "&amp;")
@@ -27,7 +31,7 @@ function escapeChars(text) {
 
 //Routes
 app.get("/", (req, res) => {
-	res.send("Hello, Arden user. How's it going?");
+	res.send("No config panel yet. But maybe one day...");
 });
 app.post("/", (req, res) => {
 	const { event, challenge } = req.body;
@@ -58,11 +62,6 @@ app.post("/", (req, res) => {
 				);
 			} else {
 				_.map(matches, async issue => {
-					//Get Headers for YouTrack API
-					const youtrackHeaders = {
-						"Content-type": "application/json",
-						Authorization: youtrackAuth
-					};
 					let errorFound = false;
 					const response = await axios
 						.get(
