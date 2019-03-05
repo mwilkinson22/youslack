@@ -2,10 +2,21 @@
 const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 //Set up express
 const app = express();
 app.use(bodyParser.json());
+
+//Set up mongoose
+const { mongoURI } = require("./config/keys");
+mongoose.connect(
+	mongoURI,
+	{
+		useNewUrlParser: true,
+		useCreateIndex: true
+	}
+);
 
 //Add Routes
 require("./auth")(app);

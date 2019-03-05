@@ -35,7 +35,7 @@ module.exports = app => {
 				"Content-Type": "application/x-www-form-urlencoded"
 			}
 		});
-		console.log(token);
+		console.log(token.data.accessToken);
 		res.send({});
 	});
 };
