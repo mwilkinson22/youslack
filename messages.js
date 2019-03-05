@@ -25,6 +25,8 @@ module.exports = app => {
 	app.post("/", (req, res) => {
 		const { event, challenge } = req.body;
 
+		console.log(req.body);
+
 		if (event) {
 			const { text, channel, ts, subtype } = event;
 
