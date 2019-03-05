@@ -9,7 +9,7 @@ const app = express();
 app.use(bodyParser.json());
 
 //Get auth keys
-const { slackAuth, youtrackAuth } = require("./config/keys");
+const { slackAuth, youtrackAuth, appClient, appSecret, team_id } = require("./config/keys");
 
 //Set axios headers
 const slackHeaders = {
@@ -21,6 +21,9 @@ const youtrackHeaders = {
 	Authorization: youtrackAuth
 };
 
+//Auth Variables
+const redirect_uri = "https://as-youslack.herokuapp.com/auth_redirect";
+
 //Escape text
 function escapeChars(text) {
 	return text
@@ -29,23 +32,33 @@ function escapeChars(text) {
 		.replace(/\>/g, "&gt;");
 }
 
-//Routes
+//Initial auth step
 app.get("/auth", (req, res) => {
-	console.log("ATTEMPTING AUTH");
-	console.log(req.body);
-	res.send({});
-});
-app.get("/", (req, res) => {
-	console.log(req);
 	const params = {
-		client_id: "40718344354.563877630320",
-		team_id: "T16M4A4AE",
-		redirect_uri: "https://as-youslack.herokuapp.com/auth",
+		client_id: appClient,
+		team_id,
+		redirect_uri,
 		scope: "channels:history,chat:write:bot,groups:history,im:history,mpim:history"
 	};
 	const paramStr = _.map(params, (val, key) => `${key}=${val}`).join("&");
 	res.redirect(`https://slack.com/oauth?${paramStr}`);
 });
+
+//Get Access Token
+app.get("/auth_redirect", (req, res) => {
+	console.log("ATTEMPTING AUTH");
+	console.log(req);
+	const { code } = req.query;
+	axios.post("https://slack.com/api/oauth.access", {
+		client_id: appClient,
+		client_secret: appSecret,
+		code,
+		redirect_uri
+	});
+	res.send({});
+});
+
+//Handle Incoming Messages
 app.post("/", (req, res) => {
 	const { event, challenge } = req.body;
 
