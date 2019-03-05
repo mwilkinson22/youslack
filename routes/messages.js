@@ -28,8 +28,7 @@ module.exports = app => {
 		const { event, challenge } = req.body;
 
 		if (event) {
-			const { text, channel, ts, subtype } = event;
-			console.log(event);
+			const { text, channel, ts, subtype, user } = event;
 
 			//IMPORTANT - Need this if to prevent infinite loops
 			if (subtype !== "bot_message" && text) {
@@ -80,7 +79,15 @@ module.exports = app => {
 
 							if (!message.data.ok) {
 								//DM. Try again if user is authenticated
-								// const token = await Token.findOne({ user_id });
+								const token = await Token.findOne({ user_id: user });
+								if (token) {
+									await axios.post(url, params, {
+										headers: {
+											"Content-type": "application/json",
+											Authorization: `Bearer ${token.access_token}`
+										}
+									});
+								}
 							}
 						}
 					});
