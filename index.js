@@ -3,6 +3,7 @@ const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const qs = require("query-string");
 
 //Boot up express
 const app = express();
@@ -38,21 +39,19 @@ app.get("/auth", (req, res) => {
 app.get("/auth_redirect", async (req, res) => {
 	console.log("ATTEMPTING AUTH");
 	const { code } = req.query;
-	const token = await axios.post(
-		"https://slack.com/api/oauth.access",
-		{
-			client_id: appClient,
-			client_secret: appSecret,
-			code,
-			redirect_uri
-		},
-		{
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded"
-			}
+	const params = {
+		client_id: appClient,
+		client_secret: appSecret,
+		code,
+		redirect_uri
+	};
+	const token = await axios.post("https://slack.com/api/oauth.access", qs.stringify(params), {
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded"
 		}
-	);
-	res.send({ token });
+	});
+	console.log(token);
+	res.send({});
 });
 
 //Handle Incoming Messages
