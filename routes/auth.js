@@ -3,6 +3,7 @@ const _ = require("lodash");
 const qs = require("query-string");
 const axios = require("axios");
 const mongoose = require("mongoose");
+const Token = mongoose.model("tokens");
 
 //Variables
 const { appClient, appSecret, team_id } = require("../config/keys");
@@ -39,8 +40,21 @@ module.exports = app => {
 
 		const { ok, access_token, user_id } = token.data;
 		if (ok) {
+			const existingToken = await Token.findOne({ user_id });
+			if (existingToken) {
+				existingToken.access_token = access_token;
+				await existingToken.save();
+			} else {
+				const token = new Token({
+					access_token,
+					user_id
+				});
+				await token.save();
+			}
+
+			res.send("Authentication complete");
+		} else {
+			res.send("Authentication error");
 		}
-		console.log(token.data);
-		res.send({});
 	});
 };

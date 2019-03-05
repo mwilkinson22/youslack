@@ -2,6 +2,8 @@
 const _ = require("lodash");
 const axios = require("axios");
 const { slackAuth, youtrackAuth } = require("../config/keys");
+const mongoose = require("mongoose");
+const Token = mongoose.model("tokens");
 
 //Set axios headers
 const slackHeaders = {
@@ -27,6 +29,7 @@ module.exports = app => {
 
 		if (event) {
 			const { text, channel, ts, subtype } = event;
+			console.log(event);
 
 			//IMPORTANT - Need this if to prevent infinite loops
 			if (subtype !== "bot_message" && text) {
@@ -52,46 +55,34 @@ module.exports = app => {
 				} else {
 					_.map(matches, async issue => {
 						let errorFound = false;
-						console.log("---------------------------------------");
-						console.log("Processing issue: " + issue);
-						console.log(" ");
-						console.log("Channel:", channel);
-						console.log(" ");
-						const response = await axios
-							.get(
-								`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
-								{
-									headers: youtrackHeaders
-								}
-							)
-							.catch(e => {
-								console.log("Error Found in YouTrack request: ", e);
-								console.log(" ");
-								errorFound = true;
-							});
+						const response = await axios.get(
+							`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
+							{
+								headers: youtrackHeaders
+							}
+						);
 						if (!errorFound) {
 							const { summary, description } = response.data;
+
+							//Get Message Params
 							const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${escapeChars(
 								summary
 							)}>\n${escapeChars(description)}`;
-							const message = await axios
-								.post(
-									"https://slack.com/api/chat.postMessage",
-									{
-										channel,
-										thread_ts: ts,
-										text:
-											text.length < 3000 ? text : `${text.substr(0, 2997)}...`
-									},
-									{ headers: slackHeaders }
-								)
-								.catch(e => {
-									console.log("Error posting message: ", e);
-									console.log(" ");
-								});
-							console.log(message.data);
+							const url = "https://slack.com/api/chat.postMessage";
+							const params = {
+								channel,
+								thread_ts: ts,
+								text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
+							};
+							const message = await axios.post(url, params, {
+								headers: slackHeaders
+							});
+
+							if (!message.data.ok) {
+								//DM. Try again if user is authenticated
+								// const token = await Token.findOne({ user_id });
+							}
 						}
-						console.log("---------------------------------------");
 					});
 				}
 			}
