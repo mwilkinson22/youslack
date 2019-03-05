@@ -78,15 +78,25 @@ app.post("/", (req, res) => {
 						const text = `<https://youtrack.ardensoftware.com/youtrack/issue/${issue}|${issue.toUpperCase()} - ${escapeChars(
 							summary
 						)}>\n${escapeChars(description)}`;
-						await axios.post(
-							"https://slack.com/api/chat.postMessage",
-							{
-								channel,
-								thread_ts: ts,
-								text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
-							},
-							{ headers: slackHeaders }
-						);
+						await axios
+							.post(
+								"https://slack.com/api/chat.postMessage",
+								{
+									channel,
+									thread_ts: ts,
+									text: text.length < 3000 ? text : `${text.substr(0, 2997)}...`
+								},
+								{ headers: slackHeaders }
+							)
+							.catch(e => {
+								console.log("---------------------------------");
+								console.log("Error sending message");
+								console.log("Channel:", channel);
+								console.log("TS:", ts);
+								console.log("Text", text);
+								console.log(e);
+								console.log("---------------------------------");
+							});
 					}
 				});
 			}
