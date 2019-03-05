@@ -55,6 +55,8 @@ module.exports = app => {
 						console.log("---------------------------------------");
 						console.log("Processing issue: " + issue);
 						console.log(" ");
+						console.log("Channel:", channel);
+						console.log(" ");
 						const response = await axios
 							.get(
 								`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description`,
@@ -87,7 +89,7 @@ module.exports = app => {
 									console.log("Error posting message: ", e);
 									console.log(" ");
 								});
-							console.log(message);
+							console.log(message.data);
 						}
 						console.log("---------------------------------------");
 					});
