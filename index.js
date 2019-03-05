@@ -30,8 +30,20 @@ function escapeChars(text) {
 }
 
 //Routes
+app.get("/auth", (req, res) => {
+	console.log("ATTEMPTING AUTH");
+	console.log(req.body);
+	res.send({});
+});
 app.get("/", (req, res) => {
-	res.send("No config panel yet. But maybe one day...");
+	const params = {
+		client_id: "40718344354.563877630320",
+		team_id: "T16M4A4AE",
+		redirect_uri: "/auth",
+		scope: "channels:history,chat:write:bot,groups:history,im:history,mpim:history"
+	};
+	const paramStr = _.map(params, (val, key) => `${key}=${val}`).join("&");
+	res.redirect(`https://slack.com/oauth?${paramStr}`);
 });
 app.post("/", (req, res) => {
 	const { event, challenge } = req.body;
