@@ -45,17 +45,21 @@ app.get("/auth", (req, res) => {
 });
 
 //Get Access Token
-app.get("/auth_redirect", (req, res) => {
+app.get("/auth_redirect", async (req, res) => {
 	console.log("ATTEMPTING AUTH");
 	console.log(req);
 	const { code } = req.query;
-	axios.post("https://slack.com/api/oauth.access", {
-		client_id: appClient,
-		client_secret: appSecret,
-		code,
-		redirect_uri
-	});
-	res.send({});
+	const token = await axios.post(
+		"https://slack.com/api/oauth.access",
+		{
+			client_id: appClient,
+			client_secret: appSecret,
+			code,
+			redirect_uri
+		},
+		{ headers: slackHeaders }
+	);
+	res.send({ token });
 });
 
 //Handle Incoming Messages
