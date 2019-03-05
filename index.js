@@ -36,10 +36,11 @@ app.get("/auth", (req, res) => {
 	res.send({});
 });
 app.get("/", (req, res) => {
+	console.log(req);
 	const params = {
 		client_id: "40718344354.563877630320",
 		team_id: "T16M4A4AE",
-		redirect_uri: "/auth",
+		redirect_uri: "https://as-youslack.herokuapp.com/auth",
 		scope: "channels:history,chat:write:bot,groups:history,im:history,mpim:history"
 	};
 	const paramStr = _.map(params, (val, key) => `${key}=${val}`).join("&");
