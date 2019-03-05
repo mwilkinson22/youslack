@@ -36,9 +36,10 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
 	const { event, challenge } = req.body;
 
+	console.log(req.body);
+
 	if (event) {
 		const { text, channel, ts, subtype } = event;
-		console.log(event);
 		//IMPORTANT - Need this if to prevent infinite loops
 		if (subtype !== "bot_message") {
 			const matches = _.uniq(
