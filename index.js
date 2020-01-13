@@ -1,5 +1,4 @@
 //Modules
-const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -10,13 +9,10 @@ app.use(bodyParser.json());
 
 //Set up mongoose
 const { mongoURI } = require("./config/keys");
-mongoose.connect(
-	mongoURI,
-	{
-		useNewUrlParser: true,
-		useCreateIndex: true
-	}
-);
+mongoose.connect(mongoURI, {
+	useNewUrlParser: true,
+	useCreateIndex: true
+});
 require("./models/Token");
 
 //Add Routes

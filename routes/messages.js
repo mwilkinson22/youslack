@@ -13,10 +13,14 @@ const youtrackHeaders = {
 
 //Escape text
 function escapeChars(text) {
-	return text
-		.replace(/\&/g, "&amp;")
-		.replace(/\</g, "&lt;")
-		.replace(/\>/g, "&gt;");
+	if (text) {
+		return text
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+	} else {
+		return "";
+	}
 }
 
 module.exports = app => {
@@ -47,9 +51,7 @@ module.exports = app => {
 						{
 							channel,
 							thread_ts: ts,
-							text: `${
-								matches.length
-							} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`
+							text: `${matches.length} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`
 						},
 						{ headers }
 					);
