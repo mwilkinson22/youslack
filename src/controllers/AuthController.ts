@@ -9,10 +9,10 @@ import { get, controller } from "./decorators";
 
 //Config
 import { keys } from "../config/keys";
-const { appClient, appSecret, team_id } = keys;
+const { appClient, appSecret, youslackUrl, team_id } = keys;
 
 //Constants
-const redirect_uri = "https://as-youslack.herokuapp.com/auth_redirect";
+const redirect_uri = `${youslackUrl}/auth_redirect`;
 
 //Model
 import { Token } from "../models/Token";

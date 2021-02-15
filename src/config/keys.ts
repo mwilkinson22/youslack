@@ -1,6 +1,7 @@
 export interface IConfigObject {
 	slackAuth: string;
 	youtrackAuth: string;
+	youslackUrl: string;
 	appClient: string;
 	appSecret: string;
 	team_id: string;
