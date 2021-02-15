@@ -90,15 +90,22 @@ class MessageController {
 						//Pull the issue info from youtrack
 						const issues = await Promise.all(
 							matches.map(issue =>
-								axios.get(
-									`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description,idReadable`,
-									{
-										headers: {
-											"Content-type": "application/json",
-											Authorization: youtrackAuth
+								axios
+									.get(
+										`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description,idReadable`,
+										{
+											headers: {
+												"Content-type": "application/json",
+												Authorization: youtrackAuth
+											}
 										}
-									}
-								)
+									)
+									.catch(error => {
+										console.error(
+											`${error.response.status} error retrieving issue '${issue}' from YouTrack`,
+											error.response.data
+										);
+									})
 							)
 						);
 
