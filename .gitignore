@@ -1,3 +1,4 @@
-config/local.js
+dist
+src/config/dev.ts
 node_modules
 .idea
