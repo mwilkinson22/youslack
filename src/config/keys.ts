@@ -5,7 +5,6 @@ export interface IConfigObject {
 	appSecret: string;
 	team_id: string;
 	mongoURI: string | number;
-	projects: string;
 }
 
 let keys: IConfigObject;

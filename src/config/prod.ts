@@ -9,7 +9,6 @@ declare global {
 			APP_SECRET: string;
 			TEAM_ID: string;
 			MONGO_URI: string;
-			PROJECTS: string;
 			PORT?: string;
 		}
 	}
@@ -21,7 +20,6 @@ const keys: IConfigObject = {
 	appClient: process.env.APP_CLIENT,
 	appSecret: process.env.APP_SECRET,
 	team_id: process.env.TEAM_ID,
-	mongoURI: process.env.MONGO_URI,
-	projects: process.env.PROJECTS
+	mongoURI: process.env.MONGO_URI
 };
 export default keys;

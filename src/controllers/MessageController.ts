@@ -8,13 +8,23 @@ import { post, controller } from "./decorators";
 
 //Config
 import { keys } from "../config/keys";
-const { projects, youtrackAuth } = keys;
+const { youtrackAuth } = keys;
 
 //Model
 import { Token, IToken } from "../models/Token";
 
 //Helpers
 import { formatMessageFromYoutrackIssue } from "../helpers/messageHelper";
+
+//External API handlers
+async function youtrackQuery(apiPath: string) {
+	return axios.get(`https://youtrack.ardensoftware.com/youtrack/api/${apiPath}`, {
+		headers: {
+			"Content-type": "application/json",
+			Authorization: youtrackAuth
+		}
+	});
+}
 
 async function postMessageToSlack(token: IToken, channel: string, ts: string, text: string): Promise<any> {
 	return axios.post(
@@ -43,17 +53,16 @@ class MessageController {
 	async processMessage(req: Request, res: Response) {
 		const { event, challenge } = req.body;
 
-		//Check for project environment variable
-		if (!projects || !projects.replace(/\|/gi, "").length) {
-			console.error("A valid PROJECTS variable must be supplied.");
-		} else {
-			//Make sure we have no empty strings or every number will try to return something
-			const prefixes = projects
-				.split("|")
-				.filter(str => str.length)
-				.join("|");
+		//Get projects
+		const projects = await youtrackQuery("admin/projects?fields=shortName");
 
-			//Create a regex from the environment variable
+		//Check for project environment variable
+		if (!projects.data || !projects.data.length) {
+			console.error("No Projects");
+		} else {
+			const prefixes = projects.data.map((project: { shortName: string }) => project.shortName).join("|");
+
+			//Create a regex from the retrieved projects
 			const regex = new RegExp(`(${prefixes})-\\d+`, "gi");
 
 			//Ensure we have an event object to work with
@@ -90,22 +99,12 @@ class MessageController {
 						//Pull the issue info from youtrack
 						const issues = await Promise.all(
 							matches.map(issue =>
-								axios
-									.get(
-										`https://youtrack.ardensoftware.com/youtrack/api/issues/${issue}?fields=summary,description,idReadable`,
-										{
-											headers: {
-												"Content-type": "application/json",
-												Authorization: youtrackAuth
-											}
-										}
-									)
-									.catch(error => {
-										console.error(
-											`${error.response.status} error retrieving issue '${issue}' from YouTrack`,
-											error.response.data
-										);
-									})
+								youtrackQuery(`issues/${issue}?fields=summary,description,idReadable`).catch(error => {
+									console.error(
+										`${error.response.status} error retrieving issue '${issue}' from YouTrack`,
+										error.response.data
+									);
+								})
 							)
 						);
 
