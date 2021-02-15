@@ -1,6 +1,6 @@
 //Modules
 import _ from "lodash";
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
 import { Request, Response } from "express";
 
 //Decorators
@@ -26,13 +26,20 @@ async function youtrackQuery(apiPath: string) {
 	});
 }
 
-async function postMessageToSlack(token: IToken, channel: string, ts: string, text: string): Promise<any> {
+async function postMessageToSlack(
+	token: IToken,
+	channel: string,
+	ts: string,
+	text: string,
+	as_user: boolean
+): Promise<AxiosPromise> {
 	return axios.post(
 		"https://slack.com/api/chat.postMessage",
 		{
 			channel,
 			thread_ts: ts,
-			text
+			text,
+			as_user
 		},
 		{
 			headers: {
@@ -72,21 +79,27 @@ class MessageController {
 					text: string;
 					//Channel Id
 					channel: string;
-					//Timestamp, effectively used as a message id
+					//Timestamp of the message, effectively used as a message id
 					ts: string;
+					//If a message is in the thread, this shows the timestamp of the "parent" message
+					//Once again this is effectively an ID, but more importantly allows us to detect
+					//if we're looking at a reply in a thread and prevent infinite loops
+					thread_ts: string;
 					//Subtype
 					subtype: "bot_message" | string | null;
 					//User Id
 					user: string;
 				};
-				const { text, channel, ts, subtype, user }: eventType = event;
+				const { text, channel, ts, user, subtype, thread_ts }: eventType = event;
 
 				//Get the user token
 				const token = await Token.findOne({ user_id: user }).lean();
 
-				//IMPORTANT - We only reply to human users to prevent infinite loops
+				//IMPORTANT - We only reply to normal messages, not thread replies,
+				//this will prevent infinite loops
+				//We also don't reply to bots
 				//We also make sure we've got a valid token and valid message.
-				if (subtype !== "bot_message" && token && text) {
+				if (!thread_ts && subtype !== "bot_message" && token && text) {
 					//Get an array of all the matches in the user's message
 					const matches = _.uniq(text.match(regex));
 
@@ -94,7 +107,7 @@ class MessageController {
 					if (matches.length > 10) {
 						//Post an error message to slack
 						const text = `${matches.length} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`;
-						await postMessageToSlack(token, channel, ts, text);
+						await postMessageToSlack(token, channel, ts, text, false);
 					} else {
 						//Pull the issue info from youtrack
 						const issues = await Promise.all(
@@ -117,7 +130,7 @@ class MessageController {
 									//Get Message Params
 									const text = formatMessageFromYoutrackIssue(idReadable, summary, description);
 
-									return postMessageToSlack(token, channel, ts, text);
+									return postMessageToSlack(token, channel, ts, text, true);
 								}
 							})
 						);
