@@ -72,7 +72,9 @@ class AuthController {
 				await token.save();
 			}
 
-			res.send("Authentication complete. Back to work.");
+			res.send(
+				"Authentication complete! YouSlack will now respond to any YouTrack issues in your Slack messages"
+			);
 		} else {
 			res.send("Authentication error");
 		}
