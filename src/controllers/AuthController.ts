@@ -28,7 +28,7 @@ class AuthController {
 			client_id: appClient,
 			team_id,
 			redirect_uri,
-			scope: "channels:history,chat:write:bot,groups:history,im:history,mpim:history"
+			scope: "channels:history,chat:write:user,chat:write:bot,groups:history,im:history,mpim:history"
 		};
 		const paramStr = _.map(params, (val: string, key: string) => `${key}=${val}`).join("&");
 		res.redirect(`https://slack.com/oauth?${paramStr}`);
