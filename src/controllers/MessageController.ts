@@ -8,7 +8,7 @@ import { post, controller } from "./decorators";
 
 //Config
 import { keys } from "../config/keys";
-const { youtrackAuth } = keys;
+const { youtrackUrl, youtrackAuth } = keys;
 
 //Model
 import { Token, IToken } from "../models/Token";
@@ -18,7 +18,7 @@ import { formatMessageFromYoutrackIssue } from "../helpers/messageHelper";
 
 //External API handlers
 async function youtrackQuery(apiPath: string) {
-	return axios.get(`https://youtrack.ardensoftware.com/youtrack/api/${apiPath}`, {
+	return axios.get(`${youtrackUrl}api/${apiPath}`, {
 		headers: {
 			"Content-type": "application/json",
 			Authorization: youtrackAuth

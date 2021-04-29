@@ -10,6 +10,7 @@ declare global {
 			TEAM_ID: string;
 			MONGO_URI: string;
 			YOUSLACK_URL: string;
+			YOUTRACK_URL: string;
 			PORT?: string;
 		}
 	}
@@ -22,6 +23,7 @@ const keys: IConfigObject = {
 	appSecret: process.env.APP_SECRET,
 	team_id: process.env.TEAM_ID,
 	mongoURI: process.env.MONGO_URI,
+	youtrackUrl: process.env.YOUTRACK_URL,
 	youslackUrl: process.env.YOUSLACK_URL
 };
 export default keys;
