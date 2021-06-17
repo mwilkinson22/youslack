@@ -8,7 +8,7 @@ import { post, controller } from "./decorators";
 
 //Config
 import { keys } from "../config/keys";
-const { youtrackUrl, youtrackAuth } = keys;
+const { youtrackUrl, youtrackAuth, maxMessages } = keys;
 
 //Model
 import { Token, IToken } from "../models/Token";
@@ -103,8 +103,8 @@ class MessageController {
 					//Get an array of all the matches in the user's message
 					const matches = _.uniq(text.match(regex));
 
-					//Maximum 10 responses to prevent spam
-					if (matches.length > 10) {
+					//Maximum responses to prevent spam
+					if (matches.length > maxMessages) {
 						//Post an error message to slack
 						const text = `${matches.length} issues in one message?! Do you want Skynet?! Because this is how you get Skynet!`;
 						await postMessageToSlack(token, channel, ts, text, false);

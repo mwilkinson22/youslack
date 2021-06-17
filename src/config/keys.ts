@@ -7,6 +7,7 @@ export interface IConfigObject {
 	appSecret: string;
 	team_id: string;
 	mongoURI: string | number;
+	maxMessages: number;
 }
 
 let keys: IConfigObject;
